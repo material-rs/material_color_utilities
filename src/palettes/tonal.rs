@@ -1,7 +1,7 @@
 use crate::{hct::Hct, utils::color::ARGB};
 use std::collections::HashMap;
 
-#[derive(Debug, Clone)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct TonalPalette {
 	tones: HashMap<u8, ARGB>,
 	hue: f64,

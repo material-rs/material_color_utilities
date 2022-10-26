@@ -1,7 +1,7 @@
 use super::tonal::TonalPalette;
 use crate::{hct::Hct, utils::color::ARGB};
 
-#[derive(Debug, Clone)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct CorePalette {
 	a1: TonalPalette,
 	a2: TonalPalette,
@@ -9,6 +9,13 @@ pub struct CorePalette {
 	n1: TonalPalette,
 	n2: TonalPalette,
 	error: TonalPalette,
+}
+
+impl Default for CorePalette {
+	fn default() -> Self {
+		let blue = [255, 0, 0, 255];
+		CorePalette::of(blue)
+	}
 }
 
 impl CorePalette {

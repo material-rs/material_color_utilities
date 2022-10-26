@@ -1,5 +1,6 @@
 use crate::{palettes::CorePalette, utils::color::ARGB};
 
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Scheme {
 	primary: ARGB,
 	on_primary: ARGB,
@@ -30,6 +31,13 @@ pub struct Scheme {
 	inverse_surface: ARGB,
 	inverse_on_surface: ARGB,
 	inverse_primary: ARGB,
+}
+
+impl Default for Scheme {
+	fn default() -> Self {
+		let blue = [255, 0, 0, 255];
+		Self::light(blue)
+	}
 }
 
 impl Scheme {

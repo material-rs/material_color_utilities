@@ -1,6 +1,6 @@
 use super::{viewing_conditions::ViewingConditions, CAM16RGB_TO_XYZ};
 use crate::utils::{
-	color::{argb_from_xyz, blue_from_argb, green_from_argb, linearized, red_from_argb, ARGB},
+	color::{argb_from_xyz, linearized, ARGB},
 	math::matrix_multiply,
 };
 use std::f64::consts::PI;

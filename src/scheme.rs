@@ -119,6 +119,7 @@ impl Scheme {
 }
 
 impl Scheme {
+	#[allow(clippy::too_many_arguments)]
 	fn new(
 		primary: ARGB,
 		on_primary: ARGB,

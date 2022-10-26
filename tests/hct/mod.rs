@@ -4,11 +4,7 @@ use color_utilities::{
 	utils::color,
 };
 
-const RED: f64 = 0xffff0000u32 as f64;
-const GREEN: f64 = 0xff00ff00u32 as f64;
-const BLUE: f64 = 0xff0000ffu32 as f64;
-const WHITE: f64 = 0xffffffffu32 as f64;
-const BLACK: f64 = 0xff000000u32 as f64;
+use super::consts::*;
 
 mod cam_from_argb {
 	use super::*;

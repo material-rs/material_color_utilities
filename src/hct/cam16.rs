@@ -1,6 +1,6 @@
 use super::{viewing_conditions::ViewingConditions, CAM16RGB_TO_XYZ};
 use crate::utils::{
-	color::{argb_from_xyz, blue_from_argb, green_from_argb, linearized, red_from_argb},
+	color::{argb_from_xyz, blue_from_argb, green_from_argb, linearized, red_from_argb, ARGB},
 	math::matrix_multiply,
 };
 use std::f64::consts::PI;
@@ -88,14 +88,12 @@ impl Cam16 {
 		1.41 * d_e_prime.powf(0.63)
 	}
 
-	pub fn from_argb(argb: f64) -> Self {
+	pub fn from_argb(argb: ARGB) -> Self {
 		Self::from_int_in_viewing_conditions(argb, ViewingConditions::default())
 	}
 
-	fn from_int_in_viewing_conditions(argb: f64, viewing_conditions: ViewingConditions) -> Self {
-		let red = red_from_argb(argb);
-		let green = green_from_argb(argb);
-		let blue = blue_from_argb(argb);
+	fn from_int_in_viewing_conditions(argb: ARGB, viewing_conditions: ViewingConditions) -> Self {
+		let (red, green, blue) = (argb[1], argb[2], argb[3]);
 
 		let red_l = linearized(red);
 		let green_l = linearized(green);
@@ -234,11 +232,11 @@ impl Cam16 {
 		Cam16::from_jch_in_viewing_conditions(j, c, h, viewing_conditions)
 	}
 
-	pub fn to_int(&self) -> f64 {
+	pub fn to_int(&self) -> ARGB {
 		self.into()
 	}
 
-	fn viewed(&self, viewing_conditions: ViewingConditions) -> f64 {
+	fn viewed(&self, viewing_conditions: ViewingConditions) -> ARGB {
 		let alpha = if self.chroma() == 0.0 || self.j() == 0.0 {
 			0.0
 		} else {
@@ -287,8 +285,8 @@ impl Cam16 {
 	}
 }
 
-impl From<&Cam16> for f64 {
-	fn from(cam16: &Cam16) -> Self {
+impl From<&Cam16> for ARGB {
+	fn from(cam16: &Cam16) -> ARGB {
 		cam16.viewed(ViewingConditions::default())
 	}
 }

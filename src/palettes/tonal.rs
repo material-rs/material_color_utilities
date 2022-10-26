@@ -1,9 +1,9 @@
-use crate::hct::Hct;
+use crate::{hct::Hct, utils::color::ARGB};
 use std::collections::HashMap;
 
 #[derive(Debug, Clone)]
 pub struct TonalPalette {
-	tones: HashMap<u8, f64>,
+	tones: HashMap<u8, ARGB>,
 	hue: f64,
 	chroma: f64,
 }
@@ -17,7 +17,7 @@ impl TonalPalette {
 		}
 	}
 
-	pub fn from_argb(argb: f64) -> Self {
+	pub fn from_argb(argb: ARGB) -> Self {
 		let hct = Hct::from_argb(argb);
 		Self::new(hct.hue(), hct.chroma())
 	}
@@ -26,7 +26,7 @@ impl TonalPalette {
 		Self::new(hue, chroma)
 	}
 
-	pub fn tone(&mut self, tone: u8) -> f64 {
+	pub fn tone(&mut self, tone: u8) -> ARGB {
 		if let Some(t) = self.tones.get(&tone) {
 			*t
 		} else {

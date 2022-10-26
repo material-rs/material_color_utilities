@@ -1,4 +1,7 @@
-use crate::{hct::cam16::Cam16, utils::color::lstar_from_argb};
+use crate::{
+	hct::cam16::Cam16,
+	utils::color::{lstar_from_argb, ARGB},
+};
 
 pub mod cam16;
 pub mod hct_solver;
@@ -21,7 +24,7 @@ pub struct Hct {
 	hue: f64,
 	chroma: f64,
 	tone: f64,
-	argb: f64,
+	argb: ARGB,
 }
 
 impl Hct {
@@ -31,7 +34,7 @@ impl Hct {
 		hct
 	}
 
-	pub fn from_argb(argb: f64) -> Self {
+	pub fn from_argb(argb: ARGB) -> Self {
 		let mut hct = Hct::default();
 		hct.mut_internal_state(argb);
 		hct
@@ -47,11 +50,11 @@ impl Hct {
 		self.tone
 	}
 
-	pub fn argb(&self) -> f64 {
+	pub fn argb(&self) -> ARGB {
 		self.argb
 	}
 
-	pub fn to_int(&self) -> f64 {
+	pub fn to_int(&self) -> ARGB {
 		self.argb()
 	}
 
@@ -67,7 +70,7 @@ impl Hct {
 		self.mut_internal_state(hct_solver::solve_to_int(self.hue(), self.chroma(), tone))
 	}
 
-	fn mut_internal_state(&mut self, argb: f64) {
+	fn mut_internal_state(&mut self, argb: ARGB) {
 		self.argb = argb;
 		let cam = Cam16::from_argb(argb);
 		self.hue = cam.hue();

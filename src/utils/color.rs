@@ -26,44 +26,57 @@ const XYZ_TO_SRGB: [[f64; 3]; 3] = [
 
 const WHITE_POINT_D65: [f64; 3] = [95.047, 100.0, 108.883];
 
-pub fn argb_from_rgb(red: f64, green: f64, blue: f64) -> f64 {
-	let red = red as u32;
-	let green = green as u32;
-	let blue = blue as u32;
+pub type RGB = [u8; 3];
+pub type ARGB = [u8; 4];
 
-	let res = 255 << 24 | (red & 255) << 16 | (green & 255) << 8 | blue & 255;
-
-	res as f64
+pub fn argb_from_rgb(red: u8, green: u8, blue: u8) -> ARGB {
+	[255, red, green, blue]
 }
 
-pub fn argb_from_linrgb(linrgb: [f64; 3]) -> f64 {
+pub fn argb_from_linrgb(linrgb: [f64; 3]) -> ARGB {
 	let r = delinearized(linrgb[0]);
 	let g = delinearized(linrgb[1]);
 	let b = delinearized(linrgb[2]);
 	argb_from_rgb(r, g, b)
 }
 
-pub fn alpha_from_argb(argb: f64) -> f64 {
-	((argb as u32) >> 24 & 255) as f64
+pub fn alpha_from_argb(argb: ARGB) -> u8 {
+	argb[0]
 }
 
-pub fn red_from_argb(argb: f64) -> f64 {
-	((argb as u32) >> 16 & 255) as f64
+pub fn red_from_argb(argb: ARGB) -> u8 {
+	argb[1]
 }
 
-pub fn green_from_argb(argb: f64) -> f64 {
-	((argb as u32) >> 8 & 255) as f64
+pub fn green_from_argb(argb: ARGB) -> u8 {
+	argb[2]
 }
 
-pub fn blue_from_argb(argb: f64) -> f64 {
-	((argb as u32) & 255) as f64
+pub fn blue_from_argb(argb: ARGB) -> u8 {
+	argb[3]
 }
 
-pub fn is_opaque(argb: f64) -> bool {
+pub fn alpha_from_argb_numeric(argb: f64) -> u8 {
+	((argb as u32) >> 24 & 255) as u8
+}
+
+pub fn red_from_argb_numeric(argb: f64) -> u8 {
+	((argb as u32) >> 16 & 255) as u8
+}
+
+pub fn green_from_argb_numeric(argb: f64) -> u8 {
+	((argb as u32) >> 8 & 255) as u8
+}
+
+pub fn blue_from_argb_numeric(argb: f64) -> u8 {
+	((argb as u32) & 255) as u8
+}
+
+/*pub fn is_opaque(argb: f64) -> bool {
 	alpha_from_argb(argb) >= 255.0
-}
+}*/
 
-pub fn argb_from_xyz(x: f64, y: f64, z: f64) -> f64 {
+pub fn argb_from_xyz(x: f64, y: f64, z: f64) -> ARGB {
 	let [linear_r, linear_g, linear_b] = matrix_multiply([x, y, z], XYZ_TO_SRGB);
 
 	let r = delinearized(linear_r);
@@ -73,15 +86,15 @@ pub fn argb_from_xyz(x: f64, y: f64, z: f64) -> f64 {
 	argb_from_rgb(r, g, b)
 }
 
-pub fn xyz_from_argb(argb: f64) -> [f64; 3] {
-	let r = linearized(red_from_argb(argb));
-	let g = linearized(green_from_argb(argb));
-	let b = linearized(blue_from_argb(argb));
+pub fn xyz_from_argb(argb: ARGB) -> [f64; 3] {
+	let r = linearized(argb[1]);
+	let g = linearized(argb[2]);
+	let b = linearized(argb[3]);
 
 	math_utils::matrix_multiply([r, g, b], SRGB_TO_XYZ)
 }
 
-pub fn argb_from_lab(l: f64, a: f64, b: f64) -> f64 {
+pub fn argb_from_lab(l: f64, a: f64, b: f64) -> ARGB {
 	let fy = (l + 16.0) / 116.0;
 	let fx = a / 500.0 + fy;
 	let fz = fy - b / 200.0;
@@ -98,9 +111,9 @@ pub fn argb_from_lab(l: f64, a: f64, b: f64) -> f64 {
 }
 
 pub fn lab_from_argb(argb: f64) -> [f64; 3] {
-	let linear_r = linearized(red_from_argb(argb));
-	let linear_g = linearized(green_from_argb(argb));
-	let linear_b = linearized(blue_from_argb(argb));
+	let linear_r = linearized(red_from_argb_numeric(argb));
+	let linear_g = linearized(green_from_argb_numeric(argb));
+	let linear_b = linearized(blue_from_argb_numeric(argb));
 
 	let [x, y, z] = matrix_multiply([linear_r, linear_g, linear_b], SRGB_TO_XYZ);
 
@@ -119,13 +132,13 @@ pub fn lab_from_argb(argb: f64) -> [f64; 3] {
 	[l, a, b]
 }
 
-pub fn argb_from_lstar(lstar: f64) -> f64 {
+pub fn argb_from_lstar(lstar: f64) -> ARGB {
 	let y = y_from_lstar(lstar);
 	let component = delinearized(y);
 	argb_from_rgb(component, component, component)
 }
 
-pub fn lstar_from_argb(argb: f64) -> f64 {
+pub fn lstar_from_argb(argb: ARGB) -> f64 {
 	let y = xyz_from_argb(argb)[1];
 	116.0 * lab_f(y / 100.0) - 16.0
 }
@@ -134,10 +147,10 @@ pub fn y_from_lstar(lstar: f64) -> f64 {
 	100.0 * lab_inv_f((lstar + 16.0) / 116.0)
 }
 
-pub fn linearized(rgb_component: f64) -> f64 {
+pub fn linearized(rgb_component: u8) -> f64 {
 	//assert!((0.0..=255.0).contains(&rgb_component));
 
-	let normalized = rgb_component / 255.0;
+	let normalized = rgb_component as f64 / 255.0;
 	if normalized <= 0.040449936 {
 		normalized / 12.92 * 100.0
 	} else {
@@ -145,9 +158,7 @@ pub fn linearized(rgb_component: f64) -> f64 {
 	}
 }
 
-pub fn delinearized(rgb_component: f64) -> f64 {
-	//assert!(rgb_component >= 0.0 && rgb_component <= 100.0);
-
+pub fn delinearized(rgb_component: f64) -> u8 {
 	let normalized = rgb_component / 100.0;
 
 	let delinearized = if normalized <= 0.0031308 {
@@ -156,7 +167,7 @@ pub fn delinearized(rgb_component: f64) -> f64 {
 		1.055 * normalized.powf(1.0 / 2.4) - 0.055
 	};
 
-	(delinearized * 255.0).round().clamp(0.0, 255.0)
+	(delinearized * 255.0).round().clamp(0.0, 255.0) as u8
 }
 
 pub const fn white_point_d65() -> [f64; 3] {

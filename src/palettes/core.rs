@@ -1,5 +1,5 @@
 use super::tonal::TonalPalette;
-use crate::hct::Hct;
+use crate::{hct::Hct, utils::color::ARGB};
 
 #[derive(Debug, Clone)]
 pub struct CorePalette {
@@ -12,19 +12,19 @@ pub struct CorePalette {
 }
 
 impl CorePalette {
-	pub fn of(argb: f64) -> Self {
+	pub fn of(argb: ARGB) -> Self {
 		Self::new(argb, false)
 	}
 
-	pub fn content_of(argb: f64) -> Self {
+	pub fn content_of(argb: ARGB) -> Self {
 		Self::new(argb, true)
 	}
 
-	fn new(argb: f64, is_content: bool) -> Self {
+	fn new(argb: ARGB, is_content: bool) -> Self {
 		let hct = Hct::from_argb(argb);
 		let hue = hct.hue();
 		let chroma = hct.chroma();
-		let error = TonalPalette::from_hue_and_chroma(hue, chroma);
+		let error = TonalPalette::from_hue_and_chroma(25.0, 84.0);
 
 		if is_content {
 			Self {
@@ -71,7 +71,7 @@ impl CorePalette {
 		&mut self.error
 	}
 
-	pub fn custom(a1: f64, a2: f64, a3: f64, n1: f64, n2: f64, error: f64) -> Self {
+	pub fn custom(a1: ARGB, a2: ARGB, a3: ARGB, n1: ARGB, n2: ARGB, error: ARGB) -> Self {
 		Self {
 			a1: TonalPalette::from_argb(a1),
 			a2: TonalPalette::from_argb(a2),

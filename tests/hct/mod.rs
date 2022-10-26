@@ -1,7 +1,7 @@
 use assert_approx_eq::assert_approx_eq;
 use color_utilities::{
 	hct::{cam16::Cam16, viewing_conditions::ViewingConditions, Hct},
-	utils::color,
+	utils::color::{self, ARGB},
 };
 
 use super::consts::*;
@@ -164,13 +164,13 @@ fn viewing_conditions() {
 
 #[test]
 fn cam_solver() {
-	let color_is_on_boundary = |argb: f64| -> bool {
-		color::red_from_argb(argb) == 0.0
-			|| color::red_from_argb(argb) == 255.0
-			|| color::green_from_argb(argb) == 0.0
-			|| color::green_from_argb(argb) == 255.0
-			|| color::blue_from_argb(argb) == 0.0
-			|| color::blue_from_argb(argb) == 255.0
+	let color_is_on_boundary = |argb: ARGB| -> bool {
+		color::red_from_argb(argb) == 0
+			|| color::red_from_argb(argb) == 255
+			|| color::green_from_argb(argb) == 0
+			|| color::green_from_argb(argb) == 255
+			|| color::blue_from_argb(argb) == 0
+			|| color::blue_from_argb(argb) == 255
 	};
 
 	for hue in (15..360).step_by(30) {
@@ -200,18 +200,18 @@ fn hct_roundtrip() {
 	for r in (0..296).step_by(37) {
 		for g in (0..296).step_by(37) {
 			for b in (0..296).step_by(37) {
-				let (r, g, b) = (r as f64, g as f64, b as f64);
-				let argb = color::argb_from_rgb(255f64.min(r), 255f64.min(g), 255f64.min(b));
+				let argb =
+					color::argb_from_rgb(255.min(r) as u8, 255.min(g) as u8, 255.min(b) as u8);
 
 				let hct = Hct::from_argb(argb);
 				let hct_2 = Hct::from(hct.hue(), hct.chroma(), hct.tone());
 
-				assert_approx_eq!(argb, hct_2.to_int(), 0.001);
+				assert_eq!(argb, hct_2.to_int());
 
 				assert_approx_eq!(hct.hue(), hct_2.hue(), 0.001);
 				assert_approx_eq!(hct.chroma(), hct_2.chroma(), 0.001);
 				assert_approx_eq!(hct.tone(), hct_2.tone(), 0.001);
-				assert_approx_eq!(hct.argb(), hct_2.argb(), 0.001);
+				assert_eq!(hct.argb(), hct_2.argb());
 			}
 		}
 	}

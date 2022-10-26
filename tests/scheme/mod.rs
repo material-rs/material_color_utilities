@@ -1,200 +1,180 @@
 use super::consts::BLUE;
 use color_utilities::scheme::Scheme;
-use color_utilities::utils::color;
 
 #[test]
 fn blue_light_scheme() {
 	let scheme = Scheme::light(BLUE);
-	assert_eq!(scheme.primary(), 0xFF343DFFu32 as f64)
+	assert_eq!(scheme.primary(), [0xff, 0x34, 0x3D, 0xFF])
 }
 
 #[test]
-#[ignore = "this fails color coversion need be fixed"]
 fn blue_dark_scheme() {
-	let scheme = Scheme::light(BLUE);
-
-	let e = 0xFFBEC2FFu32 as f64;
-	let (er, eg, eb, ea) = (
-		color::red_from_argb(e),
-		color::green_from_argb(e),
-		color::blue_from_argb(e),
-		color::alpha_from_argb(e),
-	);
-	println!("expected:\n\n R:{er}\nG:{eg}\nB:{eb}\nA:{ea}");
-	let p = scheme.primary();
-	let (pr, pg, pb, pa) = (
-		color::red_from_argb(p),
-		color::green_from_argb(p),
-		color::blue_from_argb(p),
-		color::alpha_from_argb(p),
-	);
-	println!("Result:\n\n R:{pr}\nG:{pg}\nB:{pb}\nA:{pa}");
-
-	assert_eq!(scheme.primary(), 0xFFBEC2FFu32 as f64)
+	let scheme = Scheme::dark(BLUE);
+	assert_eq!(scheme.primary(), [0xff, 0xBE, 0xC2, 0xFF])
 }
 
 #[test]
 fn third_party_light_scheme() {
-	let scheme = Scheme::light(0xFF6750A4u32 as f64);
+	let scheme = Scheme::light([0xFF, 0x67, 0x50, 0xA4]);
 
-	assert_eq!(scheme.primary(), 0xff6750A4u32 as f64);
-	assert_eq!(scheme.secondary(), 0xff625B71u32 as f64);
-	assert_eq!(scheme.tertiary(), 0xff7E5260u32 as f64);
-	assert_eq!(scheme.surface(), 0xfffffbffu32 as f64);
-	assert_eq!(scheme.on_surface(), 0xff1c1b1eu32 as f64);
+	assert_eq!(scheme.primary(), [0xff, 0x67, 0x50, 0xA4]);
+	assert_eq!(scheme.secondary(), [0xff, 0x62, 0x5B, 0x71]);
+	assert_eq!(scheme.tertiary(), [0xff, 0x7E, 0x52, 0x60]);
+	assert_eq!(scheme.surface(), [0xff, 0xff, 0xfb, 0xff]);
+	assert_eq!(scheme.on_surface(), [0xff, 0x1c, 0x1b, 0x1e]);
 }
 
 #[test]
 fn third_party_dark_scheme() {
-	let scheme = Scheme::dark(0xff6750A4u32 as f64);
+	let scheme = Scheme::dark([0xff, 0x67, 0x50, 0xA4]);
 
-	assert_eq!(scheme.primary(), 0xffcfbcffu32 as f64);
-	assert_eq!(scheme.secondary(), 0xffcbc2dbu32 as f64);
-	assert_eq!(scheme.tertiary(), 0xffefb8c8u32 as f64);
-	assert_eq!(scheme.surface(), 0xff1c1b1eu32 as f64);
-	assert_eq!(scheme.on_surface(), 0xffe6e1e6u32 as f64);
+	assert_eq!(scheme.primary(), [0xff, 0xcf, 0xbc, 0xff]);
+	assert_eq!(scheme.secondary(), [0xff, 0xcb, 0xc2, 0xdb]);
+	assert_eq!(scheme.tertiary(), [0xff, 0xef, 0xb8, 0xc8]);
+	assert_eq!(scheme.surface(), [0xff, 0x1c, 0x1b, 0x1e]);
+	assert_eq!(scheme.on_surface(), [0xff, 0xe6, 0xe1, 0xe6]);
 }
 
 #[test]
-#[ignore = "fails sometimes"]
+#[ignore = "fails sometimes by 3 or 1 units"]
 fn light_scheme_from_high_chroma_color() {
-	let scheme = Scheme::light(0xfffa2becu32 as f64);
+	let scheme = Scheme::light([0xff, 0xfa, 0x2b, 0xec]);
 
-	assert_eq!(scheme.primary(), 0xffab00a2u32 as f64);
-	assert_eq!(scheme.on_primary(), 0xffffffffu32 as f64);
-	assert_eq!(scheme.primary_container(), 0xffffd7f3u32 as f64);
-	assert_eq!(scheme.on_primary_container(), 0xff390035u32 as f64);
-	assert_eq!(scheme.secondary(), 0xff6e5868u32 as f64);
-	assert_eq!(scheme.on_secondary(), 0xffffffffu32 as f64);
-	assert_eq!(scheme.secondary_container(), 0xfff8daeeu32 as f64);
-	assert_eq!(scheme.on_secondary_container(), 0xff271624u32 as f64);
-	assert_eq!(scheme.tertiary(), 0xff815343u32 as f64);
-	assert_eq!(scheme.on_tertiary(), 0xffffffffu32 as f64);
-	assert_eq!(scheme.tertiary_container(), 0xffffdbd0u32 as f64);
-	//assert_eq!(scheme.on_tertiary_container(), 0xff321207u32 as f64);
-	//assert_eq!(scheme.error(), 0xffba1a1au32 as f64);
-	assert_eq!(scheme.on_error(), 0xffffffffu32 as f64);
-	//assert_eq!(scheme.error_container(), 0xffffdad6u32 as f64);
-	//assert_eq!(scheme.on_error_container(), 0xff410002u32 as f64);
-	assert_eq!(scheme.background(), 0xfffffbffu32 as f64);
-	assert_eq!(scheme.on_background(), 0xff1f1a1du32 as f64);
-	assert_eq!(scheme.surface(), 0xfffffbffu32 as f64);
-	assert_eq!(scheme.on_surface(), 0xff1f1a1du32 as f64);
-	assert_eq!(scheme.surface_variant(), 0xffeedee7u32 as f64);
-	assert_eq!(scheme.on_surface_variant(), 0xff4e444bu32 as f64);
-	assert_eq!(scheme.outline(), 0xff80747bu32 as f64);
-	assert_eq!(scheme.outline_variant(), 0xffd2c2cbu32 as f64);
-	assert_eq!(scheme.shadow(), 0xff000000u32 as f64);
-	assert_eq!(scheme.scrim(), 0xff000000u32 as f64);
-	assert_eq!(scheme.inverse_surface(), 0xff342f32u32 as f64);
-	assert_eq!(scheme.inverse_on_surface(), 0xfff8eef2u32 as f64);
-	assert_eq!(scheme.inverse_primary(), 0xffffabeeu32 as f64);
+	assert_eq!(scheme.primary(), [0xff, 0xab, 0x00, 0xa2]);
+	assert_eq!(scheme.on_primary(), [0xff, 0xff, 0xff, 0xff]);
+	assert_eq!(scheme.primary_container(), [0xff, 0xff, 0xd7, 0xf3]);
+	assert_eq!(scheme.on_primary_container(), [0xff, 0x39, 0x00, 0x35]);
+	assert_eq!(scheme.secondary(), [0xff, 0x6e, 0x58, 0x68]);
+	assert_eq!(scheme.on_secondary(), [0xff, 0xff, 0xff, 0xff]);
+	assert_eq!(scheme.secondary_container(), [0xff, 0xf8, 0xda, 0xee]);
+	assert_eq!(scheme.on_secondary_container(), [0xff, 0x27, 0x16, 0x24]);
+	assert_eq!(scheme.tertiary(), [0xff, 0x81, 0x53, 0x43]);
+	assert_eq!(scheme.on_tertiary(), [0xff, 0xff, 0xff, 0xff]);
+	assert_eq!(scheme.tertiary_container(), [0xff, 0xff, 0xdb, 0xd0]);
+	//assert_eq!(scheme.on_tertiary_container(), [0xff, 0x32, 0x12, 0x07]);
+	assert_eq!(scheme.error(), [0xff, 0xba, 0x1a, 0x1a]);
+	assert_eq!(scheme.on_error(), [0xff, 0xff, 0xff, 0xff]);
+	assert_eq!(scheme.error_container(), [0xff, 0xff, 0xda, 0xd6]);
+	//assert_eq!(scheme.on_error_container(), [0xff, 0x41, 0x00, 0x02]);
+	assert_eq!(scheme.background(), [0xff, 0xff, 0xfb, 0xff]);
+	assert_eq!(scheme.on_background(), [0xff, 0x1f, 0x1a, 0x1d]);
+	assert_eq!(scheme.surface(), [0xff, 0xff, 0xfb, 0xff]);
+	assert_eq!(scheme.on_surface(), [0xff, 0x1f, 0x1a, 0x1d]);
+	assert_eq!(scheme.surface_variant(), [0xff, 0xee, 0xde, 0xe7]);
+	assert_eq!(scheme.on_surface_variant(), [0xff, 0x4e, 0x44, 0x4b]);
+	assert_eq!(scheme.outline(), [0xff, 0x80, 0x74, 0x7b]);
+	assert_eq!(scheme.outline_variant(), [0xff, 0xd2, 0xc2, 0xcb]);
+	assert_eq!(scheme.shadow(), [0xff, 0x00, 0x00, 0x00]);
+	assert_eq!(scheme.scrim(), [0xff, 0x00, 0x00, 0x00]);
+	assert_eq!(scheme.inverse_surface(), [0xff, 0x34, 0x2f, 0x32]);
+	assert_eq!(scheme.inverse_on_surface(), [0xff, 0xf8, 0xee, 0xf2]);
+	assert_eq!(scheme.inverse_primary(), [0xff, 0xff, 0xab, 0xee]);
 }
 
 #[test]
-#[ignore = "fails on error roles"]
+#[ignore = "fails on some error roles by 3 or 5 units"]
 fn dark_scheme_from_high_chroma_color() {
-	let scheme = Scheme::dark(0xfffa2becu32 as f64);
+	let scheme = Scheme::dark([0xff, 0xfa, 0x2b, 0xec]);
 
-	assert_eq!(scheme.primary(), 0xffffabeeu32 as f64);
-	assert_eq!(scheme.on_primary(), 0xff5c0057u32 as f64);
-	assert_eq!(scheme.primary_container(), 0xff83007bu32 as f64);
-	assert_eq!(scheme.on_primary_container(), 0xffffd7f3u32 as f64);
-	assert_eq!(scheme.secondary(), 0xffdbbed1u32 as f64);
-	assert_eq!(scheme.on_secondary(), 0xff3e2a39u32 as f64);
-	assert_eq!(scheme.secondary_container(), 0xff554050u32 as f64);
-	assert_eq!(scheme.on_secondary_container(), 0xfff8daeeu32 as f64);
-	assert_eq!(scheme.tertiary(), 0xfff5b9a5u32 as f64);
-	assert_eq!(scheme.on_tertiary(), 0xff4c2619u32 as f64);
-	assert_eq!(scheme.tertiary_container(), 0xff663c2du32 as f64);
-	assert_eq!(scheme.on_tertiary_container(), 0xffffdbd0u32 as f64);
-	//assert_eq!(scheme.error(), 0xffffb4abu32 as f64);
-	//assert_eq!(scheme.on_error(), 0xff690005u32 as f64);
-	//assert_eq!(scheme.error_container(), 0xff93000au32 as f64);
-	//assert_eq!(scheme.on_error_container(), 0xffffb4abu32 as f64);
-	assert_eq!(scheme.background(), 0xff1f1a1du32 as f64);
-	assert_eq!(scheme.on_background(), 0xffeae0e4u32 as f64);
-	assert_eq!(scheme.surface(), 0xff1f1a1du32 as f64);
-	assert_eq!(scheme.on_surface(), 0xffeae0e4u32 as f64);
-	assert_eq!(scheme.surface_variant(), 0xff4e444bu32 as f64);
-	assert_eq!(scheme.on_surface_variant(), 0xffd2c2cbu32 as f64);
-	assert_eq!(scheme.outline(), 0xff9a8d95u32 as f64);
-	assert_eq!(scheme.outline_variant(), 0xff4e444bu32 as f64);
-	assert_eq!(scheme.shadow(), 0xff000000u32 as f64);
-	assert_eq!(scheme.scrim(), 0xff000000u32 as f64);
-	assert_eq!(scheme.inverse_surface(), 0xffeae0e4u32 as f64);
-	assert_eq!(scheme.inverse_on_surface(), 0xff342f32u32 as f64);
-	assert_eq!(scheme.inverse_primary(), 0xffab00a2u32 as f64);
+	assert_eq!(scheme.primary(), [0xff, 0xff, 0xab, 0xee]);
+	assert_eq!(scheme.on_primary(), [0xff, 0x5c, 0x00, 0x57]);
+	assert_eq!(scheme.primary_container(), [0xff, 0x83, 0x00, 0x7b]);
+	assert_eq!(scheme.on_primary_container(), [0xff, 0xff, 0xd7, 0xf3]);
+	assert_eq!(scheme.secondary(), [0xff, 0xdb, 0xbe, 0xd1]);
+	assert_eq!(scheme.on_secondary(), [0xff, 0x3e, 0x2a, 0x39]);
+	assert_eq!(scheme.secondary_container(), [0xff, 0x55, 0x40, 0x50]);
+	assert_eq!(scheme.on_secondary_container(), [0xff, 0xf8, 0xda, 0xee]);
+	assert_eq!(scheme.tertiary(), [0xff, 0xf5, 0xb9, 0xa5]);
+	assert_eq!(scheme.on_tertiary(), [0xff, 0x4c, 0x26, 0x19]);
+	assert_eq!(scheme.tertiary_container(), [0xff, 0x66, 0x3c, 0x2d]);
+	assert_eq!(scheme.on_tertiary_container(), [0xff, 0xff, 0xdb, 0xd0]);
+	assert_eq!(scheme.error(), [0xff, 0xff, 0xb4, 0xab]);
+	//assert_eq!(scheme.on_error(), [0xff, 0x69, 0x00, 0x05]);
+	//assert_eq!(scheme.error_container(), [0xff, 0x93, 0x00, 0x0a]);
+	assert_eq!(scheme.on_error_container(), [0xff, 0xff, 0xb4, 0xab]);
+	assert_eq!(scheme.background(), [0xff, 0x1f, 0x1a, 0x1d]);
+	assert_eq!(scheme.on_background(), [0xff, 0xea, 0xe0, 0xe4]);
+	assert_eq!(scheme.surface(), [0xff, 0x1f, 0x1a, 0x1d]);
+	assert_eq!(scheme.on_surface(), [0xff, 0xea, 0xe0, 0xe4]);
+	assert_eq!(scheme.surface_variant(), [0xff, 0x4e, 0x44, 0x4b]);
+	assert_eq!(scheme.on_surface_variant(), [0xff, 0xd2, 0xc2, 0xcb]);
+	assert_eq!(scheme.outline(), [0xff, 0x9a, 0x8d, 0x95]);
+	assert_eq!(scheme.outline_variant(), [0xff, 0x4e, 0x44, 0x4b]);
+	assert_eq!(scheme.shadow(), [0xff, 0x00, 0x00, 0x00]);
+	assert_eq!(scheme.scrim(), [0xff, 0x00, 0x00, 0x00]);
+	assert_eq!(scheme.inverse_surface(), [0xff, 0xea, 0xe0, 0xe4]);
+	assert_eq!(scheme.inverse_on_surface(), [0xff, 0x34, 0x2f, 0x32]);
+	assert_eq!(scheme.inverse_primary(), [0xff, 0xab, 0x00, 0xa2]);
 }
 
 #[test]
-#[ignore = "fails"]
+#[ignore = "fails on on_error_container by 1 unit on blue"]
 fn light_content_scheme_from_high_chroma_color() {
-	let _scheme = Scheme::light_content(0xfffa2becu32 as f64);
+	let scheme = Scheme::light_content([0xff, 0xfa, 0x2b, 0xec]);
 
-	//assert_eq!(scheme.primary(), 0xffab00a2u32 as f64);
-	//assert_eq!(scheme.on_primary(), 0xffffffffu32 as f64);
-	//assert_eq!(scheme.primary_container(), 0xffffd7f3u32 as f64);
-	//assert_eq!(scheme.on_primary_container(), 0xff390035u32 as f64);
-	//assert_eq!(scheme.secondary(), 0xff7f4e75u32 as f64);
-	//assert_eq!(scheme.on_secondary(), 0xffffffffu32 as f64);
-	//assert_eq!(scheme.secondary_container(), 0xffffd7f3u32 as f64);
-	//assert_eq!(scheme.on_secondary_container(), 0xff330b2fu32 as f64);
-	//assert_eq!(scheme.tertiary(), 0xff9c4323u32 as f64);
-	//assert_eq!(scheme.on_tertiary(), 0xffffffffu32 as f64);
-	//assert_eq!(scheme.tertiary_container(), 0xffffdbd0u32 as f64);
-	//assert_eq!(scheme.on_tertiary_container(), 0xff390c00u32 as f64);
-	//assert_eq!(scheme.error(), 0xffba1a1au32 as f64);
-	//assert_eq!(scheme.on_error(), 0xffffffffu32 as f64);
-	//assert_eq!(scheme.error_container(), 0xffffdad6u32 as f64);
-	//assert_eq!(scheme.on_error_container(), 0xff410002u32 as f64);
-	//assert_eq!(scheme.background(), 0xfffffbffu32 as f64);
-	//assert_eq!(scheme.on_background(), 0xff1f1a1du32 as f64);
-	//assert_eq!(scheme.surface(), 0xfffffbffu32 as f64);
-	//assert_eq!(scheme.on_surface(), 0xff1f1a1du32 as f64);
-	//assert_eq!(scheme.surface_variant(), 0xffeedee7u32 as f64);
-	//assert_eq!(scheme.on_surface_variant(), 0xff4e444bu32 as f64);
-	//assert_eq!(scheme.outline(), 0xff80747bu32 as f64);
-	//assert_eq!(scheme.outline_variant(), 0xffd2c2cbu32 as f64);
-	//assert_eq!(scheme.shadow(), 0xff000000u32 as f64);
-	//assert_eq!(scheme.scrim(), 0xff000000u32 as f64);
-	//assert_eq!(scheme.inverse_surface(), 0xff342f32u32 as f64);
-	//assert_eq!(scheme.inverse_on_surface(), 0xfff8eef2u32 as f64);
-	//assert_eq!(scheme.inverse_primary(), 0xffffabeeu32 as f64);
+	assert_eq!(scheme.primary(), [0xff, 0xab, 0x00, 0xa2]);
+	assert_eq!(scheme.on_primary(), [0xff, 0xff, 0xff, 0xff]);
+	assert_eq!(scheme.primary_container(), [0xff, 0xff, 0xd7, 0xf3]);
+	assert_eq!(scheme.on_primary_container(), [0xff, 0x39, 0x00, 0x35]);
+	assert_eq!(scheme.secondary(), [0xff, 0x7f, 0x4e, 0x75]);
+	assert_eq!(scheme.on_secondary(), [0xff, 0xff, 0xff, 0xff]);
+	assert_eq!(scheme.secondary_container(), [0xff, 0xff, 0xd7, 0xf3]);
+	assert_eq!(scheme.on_secondary_container(), [0xff, 0x33, 0x0b, 0x2f]);
+	assert_eq!(scheme.tertiary(), [0xff, 0x9c, 0x43, 0x23]);
+	assert_eq!(scheme.on_tertiary(), [0xff, 0xff, 0xff, 0xff]);
+	assert_eq!(scheme.tertiary_container(), [0xff, 0xff, 0xdb, 0xd0]);
+	assert_eq!(scheme.on_tertiary_container(), [0xff, 0x39, 0x0c, 0x00]);
+	assert_eq!(scheme.error(), [0xff, 0xba, 0x1a, 0x1a]);
+	assert_eq!(scheme.on_error(), [0xff, 0xff, 0xff, 0xff]);
+	assert_eq!(scheme.error_container(), [0xff, 0xff, 0xda, 0xd6]);
+	//assert_eq!(scheme.on_error_container(), [0xff, 0x41, 0x00, 0x02]);
+	assert_eq!(scheme.background(), [0xff, 0xff, 0xfb, 0xff]);
+	assert_eq!(scheme.on_background(), [0xff, 0x1f, 0x1a, 0x1d]);
+	assert_eq!(scheme.surface(), [0xff, 0xff, 0xfb, 0xff]);
+	assert_eq!(scheme.on_surface(), [0xff, 0x1f, 0x1a, 0x1d]);
+	assert_eq!(scheme.surface_variant(), [0xff, 0xee, 0xde, 0xe7]);
+	assert_eq!(scheme.on_surface_variant(), [0xff, 0x4e, 0x44, 0x4b]);
+	assert_eq!(scheme.outline(), [0xff, 0x80, 0x74, 0x7b]);
+	assert_eq!(scheme.outline_variant(), [0xff, 0xd2, 0xc2, 0xcb]);
+	assert_eq!(scheme.shadow(), [0xff, 0x00, 0x00, 0x00]);
+	assert_eq!(scheme.scrim(), [0xff, 0x00, 0x00, 0x00]);
+	assert_eq!(scheme.inverse_surface(), [0xff, 0x34, 0x2f, 0x32]);
+	assert_eq!(scheme.inverse_on_surface(), [0xff, 0xf8, 0xee, 0xf2]);
+	assert_eq!(scheme.inverse_primary(), [0xff, 0xff, 0xab, 0xee]);
 }
 
 #[test]
-#[ignore = "fails on error roles"]
+#[ignore = "fails on some error roles by 3 or 5 units"]
 fn dark_content_scheme_from_high_chroma_color() {
-	let scheme = Scheme::dark_content(0xfffa2becu32 as f64);
+	let scheme = Scheme::dark_content([0xff, 0xfa, 0x2b, 0xec]);
 
-	assert_eq!(scheme.primary(), 0xffffabeeu32 as f64);
-	assert_eq!(scheme.on_primary(), 0xff5c0057u32 as f64);
-	assert_eq!(scheme.primary_container(), 0xff83007bu32 as f64);
-	assert_eq!(scheme.on_primary_container(), 0xffffd7f3u32 as f64);
-	assert_eq!(scheme.secondary(), 0xfff0b4e1u32 as f64);
-	assert_eq!(scheme.on_secondary(), 0xff4b2145u32 as f64);
-	assert_eq!(scheme.secondary_container(), 0xff64375cu32 as f64);
-	assert_eq!(scheme.on_secondary_container(), 0xffffd7f3u32 as f64);
-	assert_eq!(scheme.tertiary(), 0xffffb59cu32 as f64);
-	assert_eq!(scheme.on_tertiary(), 0xff5c1900u32 as f64);
-	assert_eq!(scheme.tertiary_container(), 0xff7d2c0du32 as f64);
-	assert_eq!(scheme.on_tertiary_container(), 0xffffdbd0u32 as f64);
-	//assert_eq!(scheme.error(), 0xffffb4abu32 as f64);
-	//assert_eq!(scheme.on_error(), 0xff690005u32 as f64);
-	//assert_eq!(scheme.error_container(), 0xff93000au32 as f64);
-	//assert_eq!(scheme.on_error_container(), 0xffffb4abu32 as f64);
-	assert_eq!(scheme.background(), 0xff1f1a1du32 as f64);
-	assert_eq!(scheme.on_background(), 0xffeae0e4u32 as f64);
-	assert_eq!(scheme.surface(), 0xff1f1a1du32 as f64);
-	assert_eq!(scheme.on_surface(), 0xffeae0e4u32 as f64);
-	assert_eq!(scheme.surface_variant(), 0xff4e444bu32 as f64);
-	assert_eq!(scheme.on_surface_variant(), 0xffd2c2cbu32 as f64);
-	assert_eq!(scheme.outline(), 0xff9a8d95u32 as f64);
-	assert_eq!(scheme.outline_variant(), 0xff4e444bu32 as f64);
-	assert_eq!(scheme.shadow(), 0xff000000u32 as f64);
-	assert_eq!(scheme.scrim(), 0xff000000u32 as f64);
-	assert_eq!(scheme.inverse_surface(), 0xffeae0e4u32 as f64);
-	assert_eq!(scheme.inverse_on_surface(), 0xff342f32u32 as f64);
-	assert_eq!(scheme.inverse_primary(), 0xffab00a2u32 as f64);
+	assert_eq!(scheme.primary(), [0xff, 0xff, 0xab, 0xee]);
+	assert_eq!(scheme.on_primary(), [0xff, 0x5c, 0x00, 0x57]);
+	assert_eq!(scheme.primary_container(), [0xff, 0x83, 0x00, 0x7b]);
+	assert_eq!(scheme.on_primary_container(), [0xff, 0xff, 0xd7, 0xf3]);
+	assert_eq!(scheme.secondary(), [0xff, 0xf0, 0xb4, 0xe1]);
+	assert_eq!(scheme.on_secondary(), [0xff, 0x4b, 0x21, 0x45]);
+	assert_eq!(scheme.secondary_container(), [0xff, 0x64, 0x37, 0x5c]);
+	assert_eq!(scheme.on_secondary_container(), [0xff, 0xff, 0xd7, 0xf3]);
+	assert_eq!(scheme.tertiary(), [0xff, 0xff, 0xb5, 0x9c]);
+	assert_eq!(scheme.on_tertiary(), [0xff, 0x5c, 0x19, 0x00]);
+	assert_eq!(scheme.tertiary_container(), [0xff, 0x7d, 0x2c, 0x0d]);
+	assert_eq!(scheme.on_tertiary_container(), [0xff, 0xff, 0xdb, 0xd0]);
+	assert_eq!(scheme.error(), [0xff, 0xff, 0xb4, 0xab]);
+	//assert_eq!(scheme.on_error(), [0xff, 0x69, 0x00, 0x05]);
+	//assert_eq!(scheme.error_container(), [0xff, 0x93, 0x00, 0x0a]);
+	assert_eq!(scheme.on_error_container(), [0xff, 0xff, 0xb4, 0xab]);
+	assert_eq!(scheme.background(), [0xff, 0x1f, 0x1a, 0x1d]);
+	assert_eq!(scheme.on_background(), [0xff, 0xea, 0xe0, 0xe4]);
+	assert_eq!(scheme.surface(), [0xff, 0x1f, 0x1a, 0x1d]);
+	assert_eq!(scheme.on_surface(), [0xff, 0xea, 0xe0, 0xe4]);
+	assert_eq!(scheme.surface_variant(), [0xff, 0x4e, 0x44, 0x4b]);
+	assert_eq!(scheme.on_surface_variant(), [0xff, 0xd2, 0xc2, 0xcb]);
+	assert_eq!(scheme.outline(), [0xff, 0x9a, 0x8d, 0x95]);
+	assert_eq!(scheme.outline_variant(), [0xff, 0x4e, 0x44, 0x4b]);
+	assert_eq!(scheme.shadow(), [0xff, 0x00, 0x00, 0x00]);
+	assert_eq!(scheme.scrim(), [0xff, 0x00, 0x00, 0x00]);
+	assert_eq!(scheme.inverse_surface(), [0xff, 0xea, 0xe0, 0xe4]);
+	assert_eq!(scheme.inverse_on_surface(), [0xff, 0x34, 0x2f, 0x32]);
+	assert_eq!(scheme.inverse_primary(), [0xff, 0xab, 0x00, 0xa2]);
 }

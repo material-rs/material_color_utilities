@@ -1,7 +1,7 @@
 use crate::{
 	hct::{cam16::Cam16, viewing_conditions::ViewingConditions},
 	utils::{
-		color::{argb_from_linrgb, argb_from_lstar, y_from_lstar},
+		color::{argb_from_linrgb, argb_from_lstar, y_from_lstar, ARGB},
 		math::{matrix_multiply, sanitize_degrees_double},
 	},
 };
@@ -485,7 +485,7 @@ fn inverse_chromatic_adaptation(adapted: f64) -> f64 {
 	adapted.signum() * base.powf(1.0 / 0.42)
 }
 
-fn find_result_by_j(hue_radians: f64, chroma: f64, y: f64) -> f64 {
+fn find_result_by_j(hue_radians: f64, chroma: f64, y: f64) -> ARGB {
 	// Initial estimate of j.
 	let mut j = y.sqrt() * 11.0;
 	// ===========================================================
@@ -529,18 +529,18 @@ fn find_result_by_j(hue_radians: f64, chroma: f64, y: f64) -> f64 {
 		// Operations inlined from Cam16 to avoid repeated calculation
 		// ===========================================================
 		if linrgb[0] < 0.0 || linrgb[1] < 0.0 || linrgb[2] < 0.0 {
-			return 0.0;
+			return [0, 0, 0, 0];
 		}
 		let k_r = Y_FROM_LINRGB[0];
 		let k_g = Y_FROM_LINRGB[1];
 		let k_b = Y_FROM_LINRGB[2];
 		let fnj = k_r * linrgb[0] + k_g * linrgb[1] + k_b * linrgb[2];
 		if fnj <= 0.0 {
-			return 0.0;
+			return [0, 0, 0, 0];
 		}
 		if iteration_round == 4 || (fnj - y).abs() < 0.002 {
 			if linrgb[0] > 100.01 || linrgb[1] > 100.01 || linrgb[2] > 100.01 {
-				return 0.0;
+				return [0, 0, 0, 0];
 			}
 			return argb_from_linrgb(linrgb);
 		}
@@ -549,10 +549,10 @@ fn find_result_by_j(hue_radians: f64, chroma: f64, y: f64) -> f64 {
 		j = j - (fnj - y) * j / (2.0 * fnj);
 	}
 
-	0.0
+	[0, 0, 0, 0]
 }
 
-pub fn solve_to_int(hue_degrees: f64, chroma: f64, lstar: f64) -> f64 {
+pub fn solve_to_int(hue_degrees: f64, chroma: f64, lstar: f64) -> ARGB {
 	if chroma < 0.0001 || !(0.0001..=99.9999).contains(&lstar) {
 		return argb_from_lstar(lstar);
 	}
@@ -560,7 +560,7 @@ pub fn solve_to_int(hue_degrees: f64, chroma: f64, lstar: f64) -> f64 {
 	let hue_radians = hue_degrees / 180.0 * PI;
 	let y = y_from_lstar(lstar);
 	let exact_answer = find_result_by_j(hue_radians, chroma, y);
-	if exact_answer != 0.0 {
+	if exact_answer != [0, 0, 0, 0] {
 		return exact_answer;
 	}
 	let linrgb = bisect_to_limit(y, hue_radians);

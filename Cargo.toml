@@ -1,5 +1,5 @@
 [package]
-name = "color_utilities"
+name = "material_rs_color_utilities"
 version = "0.1.0"
 edition = "2021"
 authors = ["al3x alex.vacan.bala@gmail.com"]
